@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS content (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    publish_at DATETIME,
+    title TEXT NOT NULL,
+    body TEXT NOT NULL
+);
