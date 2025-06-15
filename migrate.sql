@@ -1,6 +1,43 @@
 CREATE TABLE IF NOT EXISTS content (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     publish_at DATETIME,
+    draft BOOLEAN DEFAULT FALSE,
     title TEXT NOT NULL,
-    body TEXT NOT NULL
+    body TEXT NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+CREATE INDEX IF NOT EXISTS content_sort ON content (updated_at DESC, publish_at DESC);
+
+CREATE TABLE IF NOT EXISTS tag (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    label TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS tagging (
+    content_id INTEGER NOT NULL,
+    tag_id INTEGER NOT NULL,
+    PRIMARY KEY (content_id, tag_id)
+);
+CREATE INDEX IF NOT EXISTS tagging_content_id ON tagging (content_id);
+CREATE INDEX IF NOT EXISTS tagging_tag_id ON tagging (tag_id);
+
+CREATE TABLE IF NOT EXISTS member (
+    account TEXT NOT NULL PRIMARY KEY,
+    password TEXT NOT NULL,
+    email TEXT UNIQUE,
+    name TEXT,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS token (
+    jti TEXT NOT NULL UNIQUE,
+    sub TEXT NOT NULL UNIQUE,
+    iss TEXT,
+    iat INTEGER,
+    exp INTEGER,
+    PRIMARY KEY (jti, sub)
+);
+CREATE INDEX IF NOT EXISTS token_jti ON token (jti);
+CREATE INDEX IF NOT EXISTS token_sub ON token (sub);

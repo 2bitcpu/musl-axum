@@ -12,6 +12,7 @@ cargo add sqlx --features runtime-tokio-rustls,chrono,derive,sqlite --no-default
 cargo add axum --features macros
 cargo add axum-extra --features typed-header --no-default-features
 cargo add tower --features timeout --no-default-features
+cargo add tower-http --features fs,cors --no-default-features
 cargo add derive-new --no-default-features
 cargo add libsqlite3-sys@^0.30.1 --optional --no-default-features
 
@@ -42,14 +43,17 @@ CREATE TABLE IF NOT EXISTS content (
 EOS
 ```
 
-```
-curl -i -X POST -H 'Content-Type: application/json' -d '{"id":0,"publishAt":"2025-06-10T01:02:03Z","title":"a","body":"b"}' http://localhost:3000/create
-```
-
+### Build commsnd
 ```
 docker run --rm -it --mount type=bind,source="$(pwd)",target=/project -w /project messense/rust-musl-cross:aarch64-musl cargo build --release
 ```
 
+### Execute command
 ```
 docker run --rm -it --mount type=bind,source="$(pwd)",target=/project -w /project -p 3000:3000 gcr.io/distroless/static-debian12 /project/target/aarch64-unknown-linux-musl/release/web-api 
+```
+
+### Test Command
+```
+curl -i -X POST -H 'Content-Type: application/json' -d '{"id":0,"publishAt":"2025-06-10T01:02:03Z","draft":true,"title":"a","body":"b"}' http://localhost:3000/service/content/create
 ```
